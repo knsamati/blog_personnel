@@ -6,9 +6,37 @@
     <description>Recent content in Categories on Statistiques avec Open Source</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Fri, 03 Jan 2020 21:13:14 -0500</lastBuildDate>
     
 	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ODK</title>
+      <link>/categories/odk/</link>
+      <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/odk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>/categories/python/</link>
+      <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/categories/r/</link>
+      <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/r/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

@@ -6,9 +6,31 @@
     <description>Recent content on Statistiques avec Open Source</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Fri, 03 Jan 2020 21:48:51 -0700</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Fri, 03 Jan 2020 21:48:51 -0700</pubDate>
+      
+      <guid>/about/</guid>
+      <description>&amp;ldquo;Savoir se contenter de ce que l&amp;rsquo;on a : c&amp;rsquo;est être riche.&amp;rdquo; Lao-Tseu
+ Pourquoi ce blog ? De part le passé, j&amp;rsquo;avais créé plusieurs blog mais je n&amp;rsquo;avais pas pu les alimenter comme il le fallait. Je crois que c&amp;rsquo;est dû à la paresse et pas assez de sujet interessant pour les alimenter.
+Depuis un certain temps, j&amp;rsquo;ai pu me pencher seurieusement sur la programmation avec R, Python et javaScript pour ameliorer mes connaissances en data science.</description>
+    </item>
+    
+    <item>
+      <title>Automatiser la collecte et publication des resultats avec ODK/kobotoolbox et R/Python</title>
+      <link>/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</link>
+      <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</guid>
+      <description>“Si quelqu’un t’a offensé, ne cherche pas à te venger. Assieds-toi au bord de la rivière et bientôt tu verras passer son cadavre.” Lao-Tseu
+ContexteJ’étais confronté dans un passé recent à la necessité de developper une étude qui doit rendre compte des resultats de la collecte dans les meilleurs delais.La solution, developper une application de statisticien avec des outils open source. La collecte des données est effectuée avec des tablettes et téléphones.</description>
+    </item>
     
   </channel>
 </rss>

@@ -3,15 +3,58 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/categories/</loc>
+    <loc>/about/</loc>
+    <lastmod>2020-01-03T21:48:51-07:00</lastmod>
   </url>
   
   <url>
     <loc>/</loc>
+    <lastmod>2020-01-03T21:48:51-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/collecte/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/dashboard/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/odk/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/python/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/r/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/</loc>
+    <lastmod>2020-01-03T21:13:14-05:00</lastmod>
   </url>
   
 </urlset>
