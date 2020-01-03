@@ -1,4 +1,4 @@
-baseurl = "https://knsamati.netlify.com"
+baseurl = "https://knsamati.netlify.com/"
 languageCode = "en-us"
 title = "Statistiques avec Open Source"
 theme = "hugo-lithium"
