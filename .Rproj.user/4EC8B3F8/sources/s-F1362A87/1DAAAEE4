@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1578087177641.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1DAAAEE4",
+    "lastKnownWriteTime" : 1578088951,
+    "last_content_update" : 1578088951551,
+    "path" : "C:/Users/Samati/Desktop/r/blog_personnel/content/post/2019-01-03-r-odk.Rmd",
+    "project_path" : "content/post/2019-01-03-r-odk.Rmd",
+    "properties" : {
+        "cursorPosition" : "118,173",
+        "scrollLine" : "107"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1578086766750.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "83ABCF14",
+    "lastKnownWriteTime" : 1578087933,
+    "last_content_update" : 1578087933703,
+    "path" : "C:/Users/Samati/Desktop/r/blog_personnel/config.toml",
+    "project_path" : "config.toml",
+    "properties" : {
+        "cursorPosition" : "19,38",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "toml"
+}

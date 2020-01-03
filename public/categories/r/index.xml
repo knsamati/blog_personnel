@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on Statistiques avec Open Source</title>
+    <link>/categories/r/</link>
+    <description>Recent content in R on Statistiques avec Open Source</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 03 Jan 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Automatiser la collecte et publication des resultats avec ODK/kobotoolbox et R/Python</title>
+      <link>/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</link>
+      <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</guid>
+      <description>“Si quelqu’un t’a offensé, ne cherche pas à te venger. Assieds-toi au bord de la rivière et bientôt tu verras passer son cadavre.” Lao-Tseu
+ContexteJ’étais confronté dans un passé recent à la necessité de developper une étude qui doit rendre compte des resultats de la collecte dans les meilleurs delais.La solution, developper une application de statisticien avec des outils open source. La collecte des données est effectuée avec des tablettes et téléphones.</description>
+    </item>
+    
+  </channel>
+</rss>

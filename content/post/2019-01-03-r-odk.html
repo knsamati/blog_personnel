@@ -1,0 +1,101 @@
+---
+title: "Automatiser la collecte et publication des resultats avec ODK/kobotoolbox et R/Python"
+author: "Komlan N. Samati"
+date: 2020-01-03T21:13:14-05:00
+categories: ["R", "Python", "ODK"]
+tags: ["Collecte",  "Dashboard"]
+---
+
+
+
+<blockquote>
+<p>“Si quelqu’un t’a offensé, ne cherche pas à te venger. Assieds-toi au bord de la rivière et bientôt tu verras passer son cadavre.” Lao-Tseu</p>
+</blockquote>
+<div id="contexte" class="section level3">
+<h3>Contexte</h3>
+<p>J’étais confronté dans un passé recent à la necessité de developper une étude qui doit rendre compte des resultats de la collecte dans les meilleurs delais.
+La solution, developper une application de statisticien avec des outils open source. La collecte des données est effectuée avec des tablettes et téléphones. Il existe principalement deux solutions : CsPRO et ODK. Après avoir passer quelques heures sur google, j’ai opté pour ODK collect pour sa <strong>simplicité</strong> et la disponibilité d’un serveur gratuit, <strong>kobotoolbox</strong> pour centraliser les données. La documentation est assez detaillée sur internet.</p>
+</div>
+<div id="les-différentes-étapes" class="section level3">
+<h3>Les différentes étapes</h3>
+<div id="première-étape-développement-du-questionnaire-avec-odk" class="section level4">
+<h4>Première étape: Développement du questionnaire avec ODK</h4>
+<p>ODK est un outils open source qui permet de developper rapidement un questionnaire et de le deployer pour la collecte des données. La documentation officielle est <a href="https://docs.opendatakit.org/">ici</a>. Il y a principalement deux façons de developper son questionnaire: avec <a href="http://xlsform.org/en/">xlsform</a> et <a href="https://build.opendatakit.org/">build</a> à la manière de googleform.</p>
+<p>La version xlsform, une feuille excel, est sans doute la plus puissante et permet une meilleure maitrise du questionnaire, des sauts et des différents contrôles.
+Un exemple simple avec quelques types de questions est <a href="https://drive.google.com/file/d/1C046ig6YO01qo3mcvKphZ_HvNGj3vaRC/view?usp=sharing">ici</a> et ça se presente comme <a href="https://odk.enke.to/preview?form=https://xlsform.opendatakit.org/downloads/8omdy0tv/exemple.xml">ça</a> après deployement.</p>
+<p>Je l’ai utilisé pour des études complexes et pour de simple collecte de routine. Les avantages que j’y trouve sont:</p>
+<ol style="list-style-type: decimal">
+<li><em>Simplicité</em> : par rapport à CsPRO, ODK est assez simple dans sa conception et dans son utilisation;</li>
+<li><em>plus de contrôle</em> : A part les contrôles classiques sur les champs, les sauts,selection en cascade,etc. il y a possibilité d’inspecter le travail de l’agent de collecte avec la variable <strong>audit</strong> (georeferencement, le temps mis pour remplir les questionnaires, enregistrement audio, lors de la collecte, etc.)</li>
+<li><em>Open Source</em> : La connaissance de Java permet de personnaliser son application à partir du code source disponible sur github;</li>
+<li><em>En plein évolution</em> : Posibilité de stocker les données dans une base de données rélationnalle (<strong>Postgresql</strong>) avec odk central et plein d’autres nouveautés;</li>
+<li><em>communauté odk</em> : Il existe une grande communauté de ODk à travers le monde tant sur github que slack.</li>
+</ol>
+</div>
+</div>
+<div id="deuxième-étape-deployement-sur-kobotoolbox" class="section level3">
+<h3>Deuxième étape: Deployement sur kobotoolbox</h3>
+<p>Après avoir developper le questionnaire et tester, le serveur gratuit que j’utilise souvent est <a href="https://www.kobotoolbox.org/"><strong>Kobotoolbox</strong></a> gratuit et il suffit juste de créer un compte pour pouvoir deployer son questionnaire sur <strong>android</strong>. Le questionnaire est accessible via les applications <strong>odk collect</strong> et <strong>kobo collect</strong>. Les deux peuvent être utilisés indiféremment.</p>
+<div id="troisième-étape-récuperation-des-données" class="section level4">
+<h4>Troisième étape : récuperation des données</h4>
+<p>Une fois le questionnaire deployé et rempli, les données peuvent être téléchargées sous plusieurs formats (excel, stata ou spss).
+Il est également possible de recuperer les données via <strong>API</strong> de kobotoolbox. On pourrait utiliser R ou Python pour recuperer les données. Cette solution permet de mettre en place un processus autonome de recuperation et de rendre compte des resultats à travers un tableau de bord.</p>
+<p>Avec R, cette solution se présente comme suit:</p>
+<pre class="r"><code>library(httr) # Pour effectuer la requete HTTP sur l&#39;API de Kobotoolbox
+library(jsonlite) # Pour convertir les données de JSON au format dataframe de R
+library(tidyverse) # Pour la manibulation des données
+
+# la requête avec les identifiants
+
+base = GET(url = &quot;https://kc.humanitarianresponse.info/api/v1/data/234083?format=json&quot;,authenticate(user,password),progress())
+
+# On recupère les données qui sont sous format JSON
+base = content(base, &#39;text&#39;, encoding = &quot;UTF-8&quot;)
+
+# On convertit les données de JSON à Dataframe
+base = fromJSON(base)</code></pre>
+<p>Avec Python, la requête se présente comme suit:</p>
+<pre class="python"><code>import requests # Pour effectuer la requête
+import pandas as pd # Pour manipuler les données
+
+# la requêre
+data = requests.get(r&quot;https://kc.humanitarianresponse.info/api/v1/data/234083?format=json&quot;,auth=(&#39;contrat_performance&#39;,&#39;Contrat_2018&#39;))
+
+# convertir en JSON
+donnee=data.json()
+
+# Converir au format DataFrame de Pandas
+df = pd.DataFrame.from_dict(donnee)
+</code></pre>
+<blockquote>
+<p>Dans la pratique, il faudra adapter ces codes à la programmation asynchrone pour eviter que la requête http bloque l’application.</p>
+</blockquote>
+</div>
+<div id="quatrième-étape-developper-une-application-pour-partager-les-resultats" class="section level4">
+<h4>Quatrième étape: developper une application pour partager les resultats</h4>
+<p>Il est possible de rendre compte des resultats de la collecte à travers des représentations graphiques et des tableaux de bord.</p>
+<p>Nous allons présenter le cas de R et Python:</p>
+<ol style="list-style-type: decimal">
+<li>Cas de R: Shiny</li>
+</ol>
+<p>Le package <a href="https://shiny.rstudio.com/"><strong>shiny</strong></a> permet de developper des applications web qui peuvent être deployer sur un server gratuit (shinyapps.io) et payant (shiny server, aws,etc).</p>
+<p>On pourrait utiliser les données de notre collecte pour faire tableau de bord comme l’exemple basic ci-dessous. (<strong>c’est juste un exemple d’illustration !</strong>)</p>
+<iframe src="https://knsamati.shinyapps.io/georeferencement/?showcase=0" width="672" height="400px">
+</iframe>
+<p>Dans les prochains posts, nous detaillerons le developpement des applications shiny avec R, surtout dans le cadre de developpement application sur les tableaux de bord école.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Cas de python : dash</li>
+</ol>
+<p>Python a une multitude de frameworks pour le developpement des applications web comme flask, django ou en core Dash. Dash est sans doute ce qui s’adapte le mieux dans notre contexte. Dans les prochains posts, nous aborderons ces différents frameworks avec des exemples.</p>
+</div>
+</div>
+<div id="application" class="section level3">
+<h3>Application</h3>
+<p>Il y a une multitude d’applications possibles de connecter ODK/kobotoolbox et une application de type shiny de R et Dash de python :</p>
+<ol style="list-style-type: decimal">
+<li><p>Dans le contexte de l’ecole, on pourrait penser au visite de classe des inspecteurs et conseillers pédagogiques, collecter des données et avoir les resultats instantanement, collecter des données sur la présence ou non des enseignants, etc.</p></li>
+<li><p>Dans le domaine de la santé, collecter les données sur la surveillance de certaines maladies;</p></li>
+<li><p>Pour les elections dans un pays par exemple, avoir les resultats dès la fermerture des bureaux de vote en développant une application avec ODK/kobotoolbox et R ou Python;</p></li>
+<li><p>Bref dans toutes les situations qui meriteraient d’avoir les resultats dès la fin des resultats.</p></li>
+</ol>
+</div>
