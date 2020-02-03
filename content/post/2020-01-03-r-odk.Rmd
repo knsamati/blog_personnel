@@ -1,5 +1,5 @@
 ---
-title: "R et Python pour se connecter à l'API de kobotoolbox (ODK) afin d'automatiser ces resultats"
+title: "Utiliser R et Python pour se connecter à l'API de kobotoolbox (ODK) afin d'automatiser ces resultats"
 author: "Komlan N. Samati"
 date: 2020-01-03T21:13:14-05:00
 categories: ["R", "Python", "ODK"]
