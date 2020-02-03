@@ -6,10 +6,19 @@
     <description>Recent content in Categories on Statistiques avec Open Source</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Jan 2020 21:13:14 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://knsamati.netlify.com/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>R</title>
+      <link>https://knsamati.netlify.com/categories/r/</link>
+      <pubDate>Sun, 05 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://knsamati.netlify.com/categories/r/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>ODK</title>
@@ -26,15 +35,6 @@
       <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
       
       <guid>https://knsamati.netlify.com/categories/python/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>R</title>
-      <link>https://knsamati.netlify.com/categories/r/</link>
-      <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
-      
-      <guid>https://knsamati.netlify.com/categories/r/</guid>
       <description></description>
     </item>
     

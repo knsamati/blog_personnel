@@ -1,0 +1,367 @@
+---
+title: 'Cartographie avec des outils open source. Premiere partie (1/4) : Avec R '
+author: Komlan Nouwokpo Samati
+date: '2020-01-05'
+slug: cartographie-avec-des-outils-open-source-premiere-partie-1-4-avec-r
+categories:
+  - R
+tags:
+  - R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+> "L'échec est le fondement de la réussite." lao-tseu
+
+## Contexte
+
+En juillet 2013, le comité d'experts sur la gestion de l'information geospatiale à l'échelle mondiale (UN-GGIM) "a reconnu qu’il était essentiel d’intégrer les informations géospatiales avec les statistiques et les données socioéconomiques et d’élaborer un cadre statistico-spatial". L'analyse spatiale s'est avérée être un élément déterminant pour mesurer et évaluer l'atteinte des objectifs du dévéloppement durable (ODD) des Nations unies (UN).
+
+Au déla de la simple visualisation geographique, les méthodes d'analyse statistique et économétriques s'appliquent parfaitement aux phénomènes socioéconomques, surtout en science de l'éducation et de la santé. 
+
+Ce billet se contentera de la visualisation des données géographiques sans aborder l'analyse statistique ou éconotrique. L'objectif étant de montrer toutes les possibilités offertes par les logiciels open source. 
+
+Ce post fait parti d'une série de quatre (4) posts:
+
+1. Les représentations cartographiques avec R, le présent post;
+
+2. Les représentations cartographiques avec Python;
+
+3. Les représentations cartographiques avec JavaScript;
+
+4. Devéloppement d'une base de données PostGis et son utilisation avec Qgis, R et Python.
+
+Tout un programme!!!
+
+Commençons avec R.
+
+## Les représentations cartographiques avec R.
+
+Ce post est subdivisé en deux parties: i) l'importation des données géographiques dans R et la représentation des éléments cartographiques avec R. 
+Les raster ne seront pas abordés dans ce post. 
+
+
+## Importations et manipulations des données des éléments géographiques
+
+Il existe plusieurs package pour l'importation des données géographiques dans R. Nous utiliserons éssentiellement deux: **rgdal** et **sf**.
+
+1. **rgdal**
+
+Jusqu'a une période récente, **rgdal** était le package le plus utilisé pour l'importation des données dans R.
+
+L'importation se fait de la façon suivante:
+
+```{r, warning=FALSE,message=FALSE}
+library(rgdal)
+prefecture_rgdal <- readOGR(dsn = "C:/Users/Samati/Desktop/r/geo",# le dossier contenant le fichier
+                     layer = "TGO_l05_2012",#le fichier shapefile à importer
+                     verbose = FALSE
+                     )
+
+class(prefecture_rgdal) # vérifier la classe de l'objet importer
+
+```
+
+
+Il s'agit d'un objet classe **SpatialPolygonsDataFrame**. On accède à sa table attributaire par le symbole @ comme ceci:
+
+```{r , eval=FALSE}
+prefecture_rgdal@data
+
+```
+
+On peut affichier les 5 premières lignes de la table par la fonction *head()*
+```{r}
+knitr::kable(head(prefecture_rgdal@data))
+```
+
+un summary sur l'objet permet d'avoir l'essentiel des données contenues dans l'objet.
+On peut importer des données dans la table attributaire en faisant un join avec d'autres tables ou data.frame.
+
+2. **sf**
+
+C'est le package du moment dans le monde de la manipulation des données spatiales avec R. Il se distingue essentiellement des anciens packages par sa simplicité de manipulation et se présente exactement comme un data.frame.
+
+L'importation se fait de la façon suivante:
+
+```{r,warning=FALSE,message=FALSE}
+library(sf)
+prefecture_sf <- st_read("C:/Users/Samati/Desktop/r/geo/TGO_l04_2012.shp")
+class(prefecture_sf)
+
+```
+
+C'est un objet de classe **sf** et **data.frame**. Il s'agit data.frame spécial avec une colonne geometry qui contient les coordonnées géographiques de l'objet importé.
+Etant un data.frame, toutes les méthodes applicables aux data.frames sont utilisables sur les objets sf.
+
+```{r, eval=FALSE}
+knitr::kable(head(prefecture_sf))
+```
+
+Etant un objet de classe data.frame, il peut être fusionné à l'aide de join avec d'autre data.frame.
+
+## Représentation graphique avec R
+
+Nous allons distinguer dans cette partie, les représentations statiques et les représentations interactives.
+
+### Les réprésentations statiques
+
+1. **Avec la fonction plot**
+
+Dans cette partie nous allons utiliser essentiellement la représentation graphique de l'objet obtenu avec **sf**.
+
+La fonction *plot* appliquée aux données importées avec R, montre une représentation graphique de toutes les variables contenues dans l'objet.
+
+```{r}
+plot(prefecture_sf)
+```
+
+On pourrait représenter une variable spécifique comme ceci:
+
+```{r}
+plot(prefecture_sf["NBRE_CANT"],border = 'grey')
+```
+
+Ou encore une région spécifique, ici la région des savanes.
+
+```{r,message=FALSE,warning=FALSE}
+library(dplyr)
+SAVANES <- prefecture_sf %>% 
+        filter(REGION=="SAVANES") %>% 
+        select(NBRE_CANT)
+plot(SAVANES, border ='white', col='grey')
+
+```
+
+Evidemment on pourrait utiliser toutes les potentialités de la fonction **plot** mais le package **ggplot** facilite grandement la représentation graphique et la personnalisation.
+
+** Calcul du taux de redoublement par préfecture**
+
+Pour bien illustrer cette partie, nous allons importer quelques données scolaires dans notre objet géographique.
+Avant de travailler sur le fichier, enlevons les espaces et les tirets dans les noms des prefectures pour les faire correspondre avec ce que nous avons dans la base des données scolaires.
+
+```{r}
+prefecture_sf$PREFECTURE <- stringr::str_replace(prefecture_sf$PREFECTURE, "^(S/p).*", "MO")
+prefecture_sf$PREFECTURE <- gsub("-","_",prefecture_sf$PREFECTURE)
+prefecture_sf$PREFECTURE <- gsub(" ","_",prefecture_sf$PREFECTURE)
+prefecture_sf$PREFECTURE <- toupper(prefecture_sf$PREFECTURE)
+```
+
+Nous allons représenter dans cette partie, le taux de redoublement suivant les préfectures et caculé comme suit.
+
+`r fontawesome::fa( "fa-exclamation-triangle", fill="red")`: Ce qui est calculé ici n'est que illustratif, quoique ...
+
+
+```{r}
+df <- readxl::read_xlsx("C:/Users/Samati/Desktop/r/geo/primaire_geo.xlsx")
+# Calculons le taux de redoublement par prefecture
+dfx <- df %>% 
+  group_by(PREFECTURE) %>% 
+  summarise(Taux_redoublement = 100*(sum(red_G_AN2+red_F_AN2)/sum(Effectif_F_AN1+Effectif_G_AN1))) %>% 
+  ungroup()
+
+```
+
+ Les données calculées sont importées dans la base spatiale avec left_join du package dplyr.
+
+
+```{r}
+base_ecole <- left_join(prefecture_sf,dfx,by="PREFECTURE")
+
+```
+
+2. Les cartes choroplèthes
+
+a. Le package **tmap**
+
+Le package **tmap** permet de faire rapidement des cartes thématiques comme ceci:
+
+```{r}
+library(tmap)
+
+tm_shape(base_ecole) +
+  tm_fill(col = 'Taux_redoublement',style="kmeans") +
+  tm_borders() +
+  tm_layout(frame = FALSE,attr.outside = TRUE,legend.outside=TRUE)
+
+```
+
+Cette carte peut être personnalisée en ajoutant les éléments necessaires comme l'echelle, ajuster la legende etc.
+
+Mais c'est la librarie **ggplot** qui permet, à mon avis, une meilleure personnalisation de sa carte.
+
+b. Le package **ggplot2**
+
+C'est sans doute de loin le meilleur package pour la réprésentation graphique et donc cartographie.
+
+```{r,cache=TRUE}
+base_ecole %>% 
+  arrange(Taux_redoublement) %>% 
+  slice(1:4) -> taux_faible# 4 prefectures où taux de redoublement faible
+
+base_ecole %>% 
+  arrange(desc(Taux_redoublement)) %>% 
+  slice(1:4) -> taux_eleve #4 prefectures oùTaux de redoublement élévé
+
+labelpt <- readxl::read_xlsx("C:/Users/Samati/Desktop/r/geo/label.xlsx")#ajoute le chef lieu des 8 prefectures
+```
+
+Avec ggplot2, on peut ajouter les éléments pas à pas et tout ce qu'on peut selon le goût de chacun en respectant évidemment la sémiologie.Ici on utilise viridis pour la palette des couleurs et showtext pour personnaliser le font.
+
+```{r fig.showtext=TRUE,message=FALSE,warning=FALSE,fig.width = 7, fig.height = 7}
+library(viridis)
+library(cowplot)
+library(sf)
+library(ggplot2)
+library(dplyr)
+library(showtext)
+font_add_google("Lobster", "Lobster")
+showtext_auto()
+
+
+ggplot(data=base_ecole)+
+  scale_alpha(name = "",range = c(0.6, 0), guide = F)+
+  geom_sf(mapping = aes(fill = Taux_redoublement),color = "white",size = 0.1) +
+  scale_fill_viridis(option="magma",alpha = 0.8,begin = 0.1,end = 0.9, direction = -1) +
+  geom_point(data=labelpt,aes(x=long,y=lat,label=PREFECTURE),color=ifelse(labelpt$PREFECTURE %in% c('ANIE','LACS','SOTOUBOUA','DOUFELGOU'),"red","skyblue"))+
+  geom_sf_text(data=taux_eleve,aes(label=PREFECTURE),size = 6,hjust = 0, nudge_x = 0.05)+
+  geom_sf_text(data=taux_faible,aes(label=PREFECTURE),size = 6,hjust = 0, nudge_x = 0.05)+
+  labs(x = NULL,
+       y = NULL,
+       title = "Taux de redoublement par Prefecture",
+       subtitle = "Calculé à partir des données de la base StatEduc, 2019",
+       caption = "Cartographie avec R") +
+  theme_void() + 
+  theme(plot.margin = margin(0, 0, 0, 0),legend.text = element_text(size = 10,hjust = 0),legend.title=element_blank(), 
+        plot.title = element_text(size = 25, hjust = 0.5,family="Lobster", color='#9d1e1e'),
+        plot.subtitle = element_text(size = 20, hjust = 0.5, margin = margin(b = -0.1,t = -0.1,l = 2,unit = "cm"),debug = F,family="Lobster", color='grey70'), plot.caption=element_text(family="Lobster", color='grey70',size = 16)) +
+  coord_sf(clip="off") 
+
+```
+
+3. La réprésentation ponctuelle
+
+Nous allons représenter les écoles de la région des savanes suivant leur statut(privé ou public) et suivant le rapport entre l'effectif des élèves sur le nombre de places dispolibles pour chaque établissement.
+
+
+```{r}
+SAVANES <- prefecture_sf %>% 
+  filter(REGION=="SAVANES")
+
+savanes_pt <- df %>% 
+  mutate(place=((Effectif_G_AN2+Effectif_F_AN2))/Nbre_places_assises) %>% 
+  filter(DRE== "DRE SAVANES")
+
+
+ggplot()+
+  geom_sf(data=SAVANES) +
+  geom_point(data = savanes_pt,aes(x = long,y = lat, size = place, color=Statut), alpha=0.9)+
+  scale_colour_manual(values = c("red","navy")) +
+    labs(x = NULL,
+       y = NULL,
+       title = "Rapport de l'effectif des élèves par rapport \n au nombre de places disponibles",
+       subtitle = "Calculé à partir des données de la base StatEduc, 2019",
+       caption = "Cartographie avec R") +
+  theme_void() + 
+    theme(plot.margin = margin(0, 0, 0, 0),legend.text = element_text(size = 8,hjust = 0),legend.title=element_blank(), 
+        plot.title = element_text(size = 16, hjust = 0.5,family="Lobster", color='#9d1e1e'),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, margin = margin(b = -0.1,t = -0.1,l = 2,unit = "cm"),debug = F,family="Lobster", color='grey70'), plot.caption=element_text(family="Lobster", color='grey70',size = 10)) +
+  coord_sf(clip="off") 
+
+
+```
+
+## Les cartes interactives
+
+L'une des limites d'une carte statique c'est l'imposibilité d'ajouter des informations necessaires sur les composantes de la carte contrairement à une carte interactive.
+
+### Leaflet
+
+Contrairement la carte précédente, ici on peut ajouter le taux de redoublement pour chaque préfecture avec leur nom.
+Le package, qui est une importation du package de même nom de Javascript, permet de faire des cartes interactives avec R.
+Reprénons le taux de redoublement par préfecture.
+
+```{r}
+library(leaflet)
+names(st_geometry(base_ecole)) = NULL
+
+bins <- c(3, 6, 9, 12, 15, 20)
+pal <- colorBin("YlOrRd", domain = base_ecole$Taux_redoublement, bins = bins)
+
+labels <- sprintf(
+  "<strong>%s</strong><br/> %g ",
+  base_ecole$PREFECTURE, base_ecole$Taux_redoublement
+) %>% lapply(htmltools::HTML)
+
+
+base_ecole %>% 
+  leaflet() %>%
+  addPolygons(
+    fillColor = ~pal(Taux_redoublement),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")
+  ) %>% 
+  addLegend(pal = pal, values = ~Taux_redoublement, opacity = 0.7, title = NULL)
+           # position = "bottomright")
+  
+
+```
+
+
+De même on pourrait représenter une carte ponctuelle avec les établissments
+
+```{r}
+SAVANES <- base_ecole %>% 
+  filter(REGION=="SAVANES")
+
+savanes_pt <- df %>% 
+  mutate(place = ifelse (Nbre_places_assises == 0,1,((Effectif_G_AN2+Effectif_F_AN2))/Nbre_places_assises)) %>% 
+  filter(DRE== "DRE SAVANES")  
+
+pal = colorNumeric("RdYlBu", domain = savanes_pt$place)
+names(st_geometry(SAVANES)) = NULL
+
+labels <- sprintf(
+  "<strong>%s</strong><br/> %g ",
+  savanes_pt$NOM_ETABLISSEMENT, savanes_pt$place
+) %>% lapply(htmltools::HTML)
+
+
+SAVANES %>% 
+  leaflet() %>% 
+  addPolygons(data = SAVANES, fill = FALSE) %>% 
+  addCircles(~savanes_pt$long, ~savanes_pt$lat, col = ~pal(savanes_pt$place), opacity = 0.9,
+             label = labels,
+             labelOptions = labelOptions(
+               style = list("font-weight" = "normal", padding = "3px 8px"),
+               textsize = "15px",
+               direction = "auto")) %>% 
+  addLegend(pal = pal, values = ~savanes_pt$place,title = NULL)
+
+
+```
+
+
+
+
+
+
+
+
+

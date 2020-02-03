@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on Statistiques avec Open Source</title>
+    <link>https://knsamati.netlify.com/tags/r/</link>
+    <description>Recent content in R on Statistiques avec Open Source</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 05 Jan 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://knsamati.netlify.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Cartographie avec des outils open source. Premiere partie (1/4) : Avec R </title>
+      <link>https://knsamati.netlify.com/2020/01/05/cartographie-avec-des-outils-open-source-premiere-partie-1-4-avec-r/</link>
+      <pubDate>Sun, 05 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://knsamati.netlify.com/2020/01/05/cartographie-avec-des-outils-open-source-premiere-partie-1-4-avec-r/</guid>
+      <description>“L’échec est le fondement de la réussite.” lao-tseu
+ContexteEn juillet 2013, le comité d’experts sur la gestion de l’information geospatiale à l’échelle mondiale (UN-GGIM) “a reconnu qu’il était essentiel d’intégrer les informations géospatiales avec les statistiques et les données socioéconomiques et d’élaborer un cadre statistico-spatial”. L’analyse spatiale s’est avérée être un élément déterminant pour mesurer et évaluer l’atteinte des objectifs du dévéloppement durable (ODD) des Nations unies (UN).</description>
+    </item>
+    
+  </channel>
+</rss>

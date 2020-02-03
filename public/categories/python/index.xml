@@ -12,13 +12,13 @@
     
     
     <item>
-      <title>Automatiser la collecte et publication des resultats avec ODK/kobotoolbox et R/Python</title>
-      <link>https://knsamati.netlify.com/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</link>
+      <title>R et Python pour se connecter à l&#39;API de kobotoolbox (ODK) afin d&#39;automatiser ces resultats</title>
+      <link>https://knsamati.netlify.com/2020/01/03/r-et-python-pour-se-connecter-%C3%A0-lapi-de-kobotoolbox-odk-afin-dautomatiser-ces-resultats/</link>
       <pubDate>Fri, 03 Jan 2020 21:13:14 -0500</pubDate>
       
-      <guid>https://knsamati.netlify.com/2020/01/03/automatiser-la-collecte-et-publication-des-resultats-avec-odk/kobotoolbox-et-r/python/</guid>
+      <guid>https://knsamati.netlify.com/2020/01/03/r-et-python-pour-se-connecter-%C3%A0-lapi-de-kobotoolbox-odk-afin-dautomatiser-ces-resultats/</guid>
       <description>“Si quelqu’un t’a offensé, ne cherche pas à te venger. Assieds-toi au bord de la rivière et bientôt tu verras passer son cadavre.” Lao-Tseu
-ContexteJ’étais confronté dans un passé recent à la necessité de developper une étude qui doit rendre compte des resultats de la collecte dans les meilleurs delais.La solution, developper une application de statisticien avec des outils open source. La collecte des données est effectuée avec des tablettes et téléphones.</description>
+ContexteJ’étais confronté dans un passé recent à la necessité de developper une étude qui doit rendre compte des resultats de la collecte dans les meilleurs delais.La solution, developper une application de statisticien avec des outils open source. La collecte des données est effectuée à l’aide de tablettes et téléphones.</description>
     </item>
     
   </channel>
