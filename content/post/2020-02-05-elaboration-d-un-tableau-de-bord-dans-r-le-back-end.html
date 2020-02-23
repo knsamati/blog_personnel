@@ -1,0 +1,296 @@
+---
+title: Introduction à l'utilisation des Bases de Données avec R et Python
+author: Komlan N. SAMATI
+date: '2020-02-05'
+slug: elaboration-d-un-tableau-de-bord-dans-r-le-back-end
+categories:
+  - R, Python, SQL
+tags:
+  - R, Python, SQL
+---
+
+
+
+<blockquote>
+<p>“Il n’y a point de chemin vers le bonheur. Le bonheur, c’est le chemin” lao-tseu</p>
+</blockquote>
+<div id="contexte" class="section level2">
+<h2>Contexte</h2>
+<p>Pour avoir des données organisées et cohérentes, les bases de données sont incontournables. Etant statisticien, on est plus habitué à des données à plat ou format de tableau de données du type variable en colonne et individu en ligne (comme en excel).
+Lorsqu’on ne maitrise pas les outils élémentaires de Base de données, on est vite dépendant des informaticiens pour l’extraction des données nécessaires.
+L’objectif de ce post est de donner les éléments de base pour extraire les données d’une base de données avec R et Python.</p>
+</div>
+<div id="r-et-les-bases-de-données" class="section level2">
+<h2>R et les bases de données</h2>
+<p>Cette partie est subdivisée en trois parties : i) connexion avec la base de données;ii) extraction des données; et iii) manipulation des données.</p>
+<div id="connexion-à-la-base-de-données" class="section level3">
+<h3>Connexion à la base de données</h3>
+<p>Avec R, il existe plusieurs moyens pour se connecter à une base de données: connextion à partir de l’onglet “connections” de Rstudio, à partir de DSN (Data Source Name) et directement avec <strong>dbconnect</strong>. C’est cette dernière option qui sera utilisée dans ce post. Pour chaque base de données, vous avez le package approprié. (RSQLite, RPostgres, RMariaDB, Mongolite, bigrquery, odbc, ect.)</p>
+<p>Pour illustrer ce post nous allons utiliser une base de données sous Ms access (oui je sais ce n’est idéal comme base de données. Nous aurons l’occasion d’utiliser PostgreSql et Postgis dans les posts à venir).</p>
+<p>Le package <strong>odbc</strong> permet de se connecter à toutes les bases utilisant <strong>odbc</strong> drivers comme <strong>Sql Server</strong>, <strong>postgresql</strong>, <strong>ORACLE</strong> , <strong>MySQL</strong>, <strong>Sqlite</strong>.</p>
+<pre class="r"><code>library(DBI)
+library(odbc)
+
+# On spécifie le pilote et le chemin d&#39;accès à la base
+cs &lt;- &quot;Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:/Users/Samati/Desktop/r/tableau/BASE_MEPSA.mdb&quot;
+# On utilise dbConnect pour se connecter à la base
+con &lt;- dbConnect(odbc::odbc(), .connection_string = cs)</code></pre>
+<p>On peut parcourir le contenu de la connexion avec <strong>dbListTables</strong> et d<strong>bListFields</strong>.</p>
+<pre class="r"><code># La fonction dbListTables() donne la liste de l&#39;ensemble des tables de la base de donnée/
+tail(dbListTables(con), 6) # avec tail, affichons les 6 dernière table de notre base de données
+## [1] &quot;TYPE_STATUT_PERS&quot; &quot;TYPE_SYSTEME&quot;     &quot;TYPE_TRANCHE_AGE&quot; &quot;TYPE_VIOLENCE&quot;   
+## [5] &quot;Query2&quot;           &quot;Query3&quot;
+head(dbListFields(con, &quot;ETABLISSEMENT&quot;)) # afficher les champs d&#39;une table, ici de la table établissement
+## [1] &quot;CODE_ETABLISSEMENT&quot;    &quot;NOM_ETABLISSEMENT&quot;     &quot;CODE_ADMINISTRATIF&quot;   
+## [4] &quot;CODE_TYPE_SYSTEME&quot;     &quot;CODE_TYPE_STATUT_ETAB&quot; &quot;CODE_TYPE_MILIEU&quot;</code></pre>
+</div>
+<div id="extraction-des-données-avec-des-requêtes" class="section level3">
+<h3>Extraction des données avec des requêtes</h3>
+<p>Pour extraire les données d’une base, il existe plusieurs moyens:</p>
+<ol style="list-style-type: decimal">
+<li>En utilisant <strong>SQL</strong></li>
+</ol>
+<p>Il est possible d’écrire directement les requêtes en SQL pour extraire les données avec la fonction <strong>dbGetQuery</strong>.
+Supposons que nous voulons avoir l’effectif des élèves pas sexe et par classe</p>
+<pre class="r"><code>library(tidyverse)
+library(glue)
+
+eff1 &lt;- dbGetQuery(con,&quot;SELECT SUM(NB_G_EFF) AS Eff_Garcon, SUM(NB_F_EFF) AS Eff_Fille
+                        FROM EFFECTIF_ELEVE
+                        WHERE CODE_TYPE_ANNEE = 18 AND CODE_TYPE_NIVEAU &lt; 11
+                        GROUP BY CODE_TYPE_NIVEAU
+           &quot;)
+eff1
+##   Eff_Garcon Eff_Fille
+## 1      37030     38426
+## 2      39856     40330
+## 3     163582    158280
+## 4     144113    138162
+## 5     132465    126614
+## 6     125390    121047
+## 7     119873    114970
+## 8     105501     99500
+## 9      95390     81875</code></pre>
+<p>Il est également possible d’envoyer la requête et récupérer la réponse séparement avec les fonctions <strong>dbSendQuery</strong> et <strong>dbFetch</strong> :</p>
+<pre class="r"><code>result &lt;- dbSendQuery(con,&quot;SELECT SUM(NB_G_EFF) AS Eff_Garcon, SUM(NB_F_EFF) AS Eff_Fille
+                FROM EFFECTIF_ELEVE
+                WHERE CODE_TYPE_ANNEE = 18 AND CODE_TYPE_NIVEAU &lt; 11
+                GROUP BY CODE_TYPE_NIVEAU&quot;)
+eff2 &lt;- dbFetch(result)
+eff2
+##   Eff_Garcon Eff_Fille
+## 1      37030     38426
+## 2      39856     40330
+## 3     163582    158280
+## 4     144113    138162
+## 5     132465    126614
+## 6     125390    121047
+## 7     119873    114970
+## 8     105501     99500
+## 9      95390     81875</code></pre>
+<p>Toutes les requêtes possibles peuvent être élaborées à partir de R (les jointures, sous-requêtes, ect.)
+Une autre façon, est d’utiliser les <strong>chunk</strong> de Rmarkdown.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Les requêtes dans le chunk de Rmarkdown</li>
+</ol>
+<p>Avec Rmarkdown, il est possible d’inclure directement un chunk de sql dans le document en spécifiant la connexion. Depuis Rstudio 1.2, il est possible de créer un script sql dans Rmarkdown et Rstudio.</p>
+<p>Ainsi on pourrait exécuter la même requête de la façon suivante:</p>
+<pre class="sql"><code>SELECT SUM(NB_G_EFF) AS Effectif_Garcon, SUM(NB_F_EFF) AS Effectif_Fille
+FROM EFFECTIF_ELEVE
+WHERE CODE_TYPE_ANNEE = 18 AND CODE_TYPE_NIVEAU &lt; 11
+GROUP BY CODE_TYPE_NIVEAU
+</code></pre>
+<div class="knitsql-table">
+<table>
+<caption><span id="tab:unnamed-chunk-5">Table 1: </span>9 records</caption>
+<thead>
+<tr class="header">
+<th align="right">Effectif_Garcon</th>
+<th align="right">Effectif_Fille</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">37030</td>
+<td align="right">38426</td>
+</tr>
+<tr class="even">
+<td align="right">39856</td>
+<td align="right">40330</td>
+</tr>
+<tr class="odd">
+<td align="right">163582</td>
+<td align="right">158280</td>
+</tr>
+<tr class="even">
+<td align="right">144113</td>
+<td align="right">138162</td>
+</tr>
+<tr class="odd">
+<td align="right">132465</td>
+<td align="right">126614</td>
+</tr>
+<tr class="even">
+<td align="right">125390</td>
+<td align="right">121047</td>
+</tr>
+<tr class="odd">
+<td align="right">119873</td>
+<td align="right">114970</td>
+</tr>
+<tr class="even">
+<td align="right">105501</td>
+<td align="right">99500</td>
+</tr>
+<tr class="odd">
+<td align="right">95390</td>
+<td align="right">81875</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Il est possible de socker les resultats dans un data.frame, en spécifiant l’option du chunk <strong>output.var=“Effectif”</strong> et le nom de la data.frame</p>
+<pre class="sql"><code>SELECT SUM(NB_G_EFF) AS Effectif_Garcon, SUM(NB_F_EFF) AS Effectif_Fille
+FROM EFFECTIF_ELEVE
+WHERE CODE_TYPE_ANNEE = 18 AND CODE_TYPE_NIVEAU &lt; 11
+GROUP BY CODE_TYPE_NIVEAU
+</code></pre>
+<p>Les resultats de la requête peuvent être utilisés comme toute autre data.frame:</p>
+<pre class="r"><code>head(Effectif)
+##   Effectif_Garcon Effectif_Fille
+## 1           37030          38426
+## 2           39856          40330
+## 3          163582         158280
+## 4          144113         138162
+## 5          132465         126614
+## 6          125390         121047</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>En utilisant <strong>dbplyr</strong></li>
+</ol>
+<p>C’est sans doute la méthode la mieux indiquée si on ne maitrise pas très bien <strong>SQL</strong> (Normalement SQL n’est pas difficile à apprendre. Un peu d’exercice et les ressources sont assez abondantes sur le net) mais qu’on maitrise un peu plus les fonctions de <strong>tidyverse</strong></p>
+<p>Pour pouvoir utiliser les requêtes, il faut importer chaque tables qui fera parti de la requête.
+Supposons que nous voulons l’effectif des élèves par classe.</p>
+<pre class="r"><code>
+EFFECTIF_ELEVE &lt;- tbl(con,&#39;EFFECTIF_ELEVE&#39;) %&gt;% collect() # La fonction collect() permet de sauvegarder la table en mémoire
+         
+Eff &lt;- EFFECTIF_ELEVE  %&gt;% 
+  mutate(Total=NB_G_EFF+NB_F_EFF) %&gt;% 
+  filter(CODE_TYPE_NIVEAU %in% c(4,5,6,7,8,9) &amp; CODE_TYPE_ANNEE==18) %&gt;% 
+  select(CODE_ETABLISSEMENT,CODE_TYPE_NIVEAU, Total) %&gt;%
+  pivot_wider(names_from = CODE_TYPE_NIVEAU, values_from = Total) %&gt;%  
+  rename(CP1=&#39;4&#39;,CP2=&#39;5&#39;,CE1=&#39;6&#39;,CE2=&#39;7&#39;,CM1=&#39;8&#39;,CM2=&#39;9&#39; )  </code></pre>
+<p>Et les résultats de cette requête peuvent être utilisés pour les analyses nécessaires.</p>
+<p>Pour terminer cette partie, faisons une jolie représentation graphique à partir des données d’une requête.</p>
+<pre class="r"><code>library(showtext)
+showtext_auto()
+font_add_google(&quot;Lobster&quot;, &quot;Lobster&quot;)
+
+
+BAC &lt;- tbl(con,&#39;BAC&#39;) %&gt;% filter(!is.na(CODE_ETABLISSEMENT)) %&gt;% collect()
+
+BAC %&gt;% 
+  mutate(Recu = ifelse(Decision %in% c(&quot;ADM&quot;,&quot;Adss&quot;),1,0)) %&gt;% 
+  filter(Annee_Bac==2017 &amp; Série==&quot;A4&quot;) %&gt;% 
+  group_by(DRE) %&gt;% 
+  summarise(eff=n(),admis=sum(Recu)) %&gt;% 
+  mutate(Tx_admis=round((admis/eff)*100),2) %&gt;% 
+  mutate(lome= ifelse(DRE == &quot;DRE GOLFE LOME&quot;, TRUE, FALSE)) %&gt;% 
+  arrange(Tx_admis) %&gt;% 
+  ggplot(aes(x = reorder(DRE,Tx_admis) ,y = Tx_admis,fill=lome))+
+  geom_col() +
+  coord_flip() +
+  geom_text(aes(label=Tx_admis),color=&#39;white&#39;,size=5,hjust=1.5) +
+  cowplot::theme_minimal_vgrid(18)+
+  labs(title = &quot;Taux de reussite BAC série A4&quot;, subtitle = &quot;BAC 2017&quot;)+
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    legend.position = &quot;none&quot;,
+    plot.title = element_text(size = 18, hjust = 0.5,family=&quot;Lobster&quot;, color=&#39;#B0B0B0D0&#39;),
+    plot.subtitle = element_text(size = 16, hjust = 0.5,family=&quot;Lobster&quot;, color=&quot;#D55E00D0&quot;),
+    axis.text.y = element_text(size=13,color = &#39;gray20&#39;))+
+  scale_fill_manual(name=NULL, values = c(&quot;#B0B0B0D0&quot;, &quot;#D55E00D0&quot;))</code></pre>
+<p><img src="/post/2020-02-05-elaboration-d-un-tableau-de-bord-dans-r-le-back-end_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Pour se deconnecter de la base, on utilise la fonction <strong>dbDisconnect()</strong></p>
+<pre class="r"><code>dbDisconnect(con)</code></pre>
+</div>
+</div>
+<div id="python-et-les-bases-de-données" class="section level2">
+<h2>Python et les bases de données</h2>
+<p>Je connais essentiellement trois méthodes pour utiliser une base de données en python (si vous en connaissez d’autres, merci de l’indiquer en commentaire pour moi).</p>
+<div id="utilisation-du-cursor" class="section level3">
+<h3>Utilisation du cursor</h3>
+<p>Pour les deux premières méthodes, la connexion se fait de la même manière. Dans notre cas, nous allons utiliser le module <strong>pyodbc</strong> pour se connecter à notre base Ms access. La connexion se fait de la manière suivante:</p>
+<pre class="python"><code>import pyodbc
+
+# On spécifie le pilote et le chemin vers la base de données
+conn_str = (
+    r&#39;DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};&#39;
+    r&#39;DBQ=C:/Users/Samati/Desktop/r/tableau/BASE_MEPSA.mdb;&#39;
+    )
+# On utilise la fonction **connect** du module **pyodbc** pour se connecter alors la base de données.
+conn = pyodbc.connect(conn_str)
+# On crée le curseur de la connexion pour pouvoir éxécuter nos requête SQL
+cursor = conn.cursor()</code></pre>
+<p>Pour exécuter une requête, on la passe à la fonction <strong>execute</strong> du curseur. On récupère les données avec <strong>fetchall</strong>. Comme pour tous les fichiers dans python, on utilise une boucle pour parcourir les différentes lignes du résultat et les afficher.</p>
+<pre class="python"><code># On exécute la requête
+df=cursor.execute(&quot;&quot;&quot;
+                  SELECT SUM(NB_G_EFF) AS Eff_Garcon, SUM(NB_F_EFF) AS Eff_Fille
+                  FROM EFFECTIF_ELEVE
+                  WHERE CODE_TYPE_ANNEE = 18 AND CODE_TYPE_NIVEAU &lt; 11
+                  GROUP BY CODE_TYPE_NIVEAU
+              &quot;&quot;&quot;)
+df = cursor.fetchall()
+for row in df:
+    print(row)
+
+# On arrête la connexion à la base avec close    
+## (37030.0, 38426.0)
+## (39856.0, 40330.0)
+## (163582.0, 158280.0)
+## (144113.0, 138162.0)
+## (132465.0, 126614.0)
+## (125390.0, 121047.0)
+## (119873.0, 114970.0)
+## (105501.0, 99500.0)
+## (95390.0, 81875.0)
+conn.close()</code></pre>
+<p>Cette méthode classique avec python peut être faciliter avec <strong>pandas</strong>.
+Le module <strong>pandas</strong> nous facilite grandement les différentes étapes.</p>
+</div>
+<div id="utilisation-de-pandas" class="section level3">
+<h3>Utilisation de Pandas</h3>
+<p>Avec la fonction <strong>read_sql_query()</strong> de pandas, c’est plus simple de se connecter à la base de données et de récupérer les données sous forme de dataframe. On utilise juste la connexion et la requête:</p>
+<pre class="python"><code>import pandas as pd
+
+conn_str = (
+    r&#39;DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};&#39;
+    r&#39;DBQ=C:/Users/Samati/Desktop/r/tableau/BASE_MEPSA.mdb;&#39;
+    )
+conn = pyodbc.connect(conn_str)
+
+requete= &quot;&quot;&quot;
+         SELECT SUM(NB_G_EFF) AS Eff_Garcon, SUM(NB_F_EFF) AS Eff_Fille
+         FROM EFFECTIF_ELEVE
+         WHERE CODE_TYPE_ANNEE = 18 AND CODE_TYPE_NIVEAU &lt; 11
+         GROUP BY CODE_TYPE_NIVEAU
+         &quot;&quot;&quot;
+
+df = pd.read_sql_query(requete,conn)
+
+df.head()
+##    Eff_Garcon  Eff_Fille
+## 0     37030.0    38426.0
+## 1     39856.0    40330.0
+## 2    163582.0   158280.0
+## 3    144113.0   138162.0
+## 4    132465.0   126614.0</code></pre>
+<p>On obtient donc un dataframe pour faire nos différentes analyses.</p>
+</div>
+<div id="orm-object-relational-mapper" class="section level3">
+<h3>ORM (object-relational mapper)</h3>
+<p>Cette méthode est utilisée essentiellement dans le développement des applications web avec les microservices de python comme <strong>flask</strong> et <strong>django</strong>. Ces méthodes permettent d’écrire les requêtes en python sans utiliser SQL.
+Ces aspects seront abordés lorsque nous procéderons aux développements des applications web avec python.</p>
+<pre class="python"><code>conn.close()</code></pre>
+</div>
+</div>
