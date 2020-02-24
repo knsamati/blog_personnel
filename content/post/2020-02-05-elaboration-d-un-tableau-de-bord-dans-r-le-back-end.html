@@ -188,7 +188,7 @@ font_add_google(&quot;Lobster&quot;, &quot;Lobster&quot;)
 
 BAC &lt;- tbl(con,&#39;BAC&#39;) %&gt;% filter(!is.na(CODE_ETABLISSEMENT)) %&gt;% collect()
 
- BAC %&gt;% 
+baci &lt;- BAC %&gt;% 
   mutate(Recu = ifelse(Decision %in% c(&quot;ADM&quot;,&quot;Adss&quot;),1,0)) %&gt;% 
   filter(Annee_Bac==2017 &amp; Série==&quot;A4&quot;) %&gt;% 
   group_by(DRE) %&gt;% 
@@ -209,10 +209,10 @@ BAC &lt;- tbl(con,&#39;BAC&#39;) %&gt;% filter(!is.na(CODE_ETABLISSEMENT)) %&gt;
     plot.title = element_text(size = 18, hjust = 0.5,family=&quot;Lobster&quot;, color=&#39;#B0B0B0D0&#39;),
     plot.subtitle = element_text(size = 16, hjust = 0.5,family=&quot;Lobster&quot;, color=&quot;#D55E00D0&quot;),
     axis.text.y = element_text(size=13,color = &#39;gray20&#39;))+
-  scale_fill_manual(name=NULL, values = c(&quot;#B0B0B0D0&quot;, &quot;#D55E00D0&quot;))</code></pre>
-<p><img src="/post/2020-02-05-elaboration-d-un-tableau-de-bord-dans-r-le-back-end_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<pre class="r"><code>#ggsave(&quot;baci.png&quot;)</code></pre>
-<pre class="r"><code>#knitr::include_graphics(&quot;baci.png&quot;)</code></pre>
+  scale_fill_manual(name=NULL, values = c(&quot;#B0B0B0D0&quot;, &quot;#D55E00D0&quot;))
+ggsave(&quot;baci.png&quot;)</code></pre>
+<pre class="r"><code>knitr::include_graphics(&quot;baci.png&quot;)</code></pre>
+<p><img src="baci.png" width="1050" /></p>
 <p>Pour se deconnecter de la base, on utilise la fonction <strong>dbDisconnect()</strong></p>
 <pre class="r"><code>dbDisconnect(con)</code></pre>
 </div>
