@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.59.1" />
+
+
+<title>Manipulation des données volumineuses (Big Data) avec R - Statistiques avec Open Source</title>
+<meta property="og:title" content="Manipulation des données volumineuses (Big Data) avec R - Statistiques avec Open Source">
+
+
+  <link href='https://knsamati.netlify.com/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/knsamati">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rsamati">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Manipulation des données volumineuses (Big Data) avec R</h1>
+
+    
+    <span class="article-date">2020-04-12</span>
+    
+
+    <div class="article-content">
+      
+
+
+<div id="contexte" class="section level1">
+<h1>Contexte</h1>
+<p>En référence à ce <a href="https://twitter.com/dataccino/status/1247197111126577152">twit</a> d’un internaut demandant comment importer et manipuler un fichier de 4,5 Gb dans R avec une machine de 8Gb de RAM, j’ai decidé de faire un petit post sur l’importation et la maniplation des données sous R.
+Dans ce petit post, nous allons faire le tour des différentes solutions possibles.
+Dans un passé récent, R n’était pas connu pour la manipulation des fichiers assez volumineux mais la situation a assez évolué avec le développement de nouveaux packages.</p>
+<p>Dans tous les cas, la puissance d’importation et de manipulation des fichiers volumineux dans R dépend aussi de la puissance de la machine utilisée.
+Pour illustrer ce post, nous utiliserons un fichier de près de 6 millions de lignes et 35 variables</p>
+</div>
+<div id="la-solution-avec-les-packages" class="section level1">
+<h1>La solution avec les packages</h1>
+<pre class="r"><code>fichier &lt;- &quot;C:/Users/Samati/Desktop/r/SPSS_RGPH4/population.csv&quot;</code></pre>
+<p>Les solutions avec les packages sont assez nombreuses:<em>data.table</em>,<em>disk.frame</em>, <em>vroom</em>, <em>arrow</em>, <em>sparklyr</em>, <em>disk.frame</em>, etc. Dans ce post nous allons aborder <em>data.table</em> et <em>disk.frame</em></p>
+<div id="data.table" class="section level2">
+<h2>1. data.table</h2>
+<p>A mon avis, c’est le package naturel pour importer et manipuler les données volumineuses dans R. C’est un package assez puissant et assez simple à apprendre. Je suis toujours assez fasciné par sa simplicité dans la manipulation des données.
+Pour l’importation de fichier csv, data.table dispose la fonction <strong>fread()</strong> et pour l’exportation <strong>fwrite()</strong></p>
+<pre class="r"><code>library(data.table)
+dt &lt;- fread(fichier)
+dim(dt);class(dt)
+## [1] 5847453      35
+## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+<p>Un objet créé avec data.table est de class data.table et data.frame, en gros on peut utiliser les syntaxes de base de R pour manipuler les objets importer avec data.table.
+Ainsi si nous vous voulons l’effectif par sexe et l’age moyen des individus :</p>
+<pre class="r"><code>dt[,sexe := as.factor(P04)] # Renommer la colonne P04 en sexe
+setattr(dt$sexe,&quot;levels&quot;,c(&quot;Masculin&quot;,&quot;Feminin&quot;))# Renommer les modalités de la variable sexe
+kable(
+dt[,by=sexe,.(.N,mean(P06AGE, na.rm = TRUE))] 
+) # compter les individus,calculer l&#39;âge moyen par sexe</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">sexe</th>
+<th align="right">N</th>
+<th align="right">V2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Masculin</td>
+<td align="right">2839319</td>
+<td align="right">22.08893</td>
+</tr>
+<tr class="even">
+<td align="left">Feminin</td>
+<td align="right">3008134</td>
+<td align="right">23.94456</td>
+</tr>
+</tbody>
+</table>
+<p>Si jamais vous êtes familier avec le package dplyr de la famille de tidyverse, vous pouvez utiliser les syntaxe de dplyr avec les objets data.table à travers dtplyr comme ceci.</p>
+<pre class="r"><code>library(dtplyr)
+library(dplyr)
+df &lt;- lazy_dt(setDF(dt))
+
+kable(
+df %&gt;% group_by(sexe) %&gt;% 
+       summarise(Effectif = n(),
+                 age_moy = mean(P06AGE,na.rm = TRUE))
+)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">sexe</th>
+<th align="right">Effectif</th>
+<th align="right">age_moy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Masculin</td>
+<td align="right">2839319</td>
+<td align="right">22.08893</td>
+</tr>
+<tr class="even">
+<td align="left">Feminin</td>
+<td align="right">3008134</td>
+<td align="right">23.94456</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="disk.frame" class="section level2">
+<h2>2. disk.frame</h2>
+<p>Un autre package que je trouve assez intéressant, c’est le package <strong>disk.frame</strong>. C’est assez comparable à data.table en terme de puissance. On peut utiliser un objet disk.frame avec les syntaxes de dplyr et de data.frame.</p>
+<p>Les options nécessaires,</p>
+<pre class="r"><code>library(disk.frame)
+setup_disk.frame()
+options(future.globals.maxSize = Inf)</code></pre>
+<p>-L’importation du fichier avec disk.frame</p>
+<pre class="r"><code>
+disk_df &lt;- csv_to_disk.frame(
+  fichier, 
+  outdir = &quot;population&quot;,
+  overwrite = T)</code></pre>
+<ul>
+<li>La manipulation des données du disk.frame avec dplyr</li>
+</ul>
+<pre class="r"><code>kable(
+disk_df %&gt;% group_by(P04) %&gt;% 
+            summarise(Effectif = n(),
+            age_moy = mean(P06AGE,na.rm = TRUE)) %&gt;% 
+            collect()
+)</code></pre>
+<ul>
+<li>La manipulation des données du disk.frame avec data.table</li>
+</ul>
+<pre class="r"><code>kable(
+collect(disk_df)[,by=P04,.(.N,mean(P06AGE, na.rm = T))]
+)</code></pre>
+</div>
+</div>
+<div id="la-solution-base-de-données" class="section level1">
+<h1>La solution base de données</h1>
+<p>Dans un article précédent, nous avions déjà abordé l’utilisation des base de données avec R et python. Cette solution devient particulièrement intéressante dans le contexte des données volumineuses.
+Pour l’illustrer, nous avons crée une petite base de données sous SQLite avec les données précédentes (PostgreSQl est aussi une solution intéressante).</p>
+<pre class="r"><code>library(RSQLite)
+library(DBI)
+library(dplyr)
+setwd(&quot;C:/Users/Samati/Desktop/r/SPSS_RGPH4&quot;)
+con &lt;- dbConnect(RSQLite::SQLite(), dbname = &quot;census.sqlite3&quot;)
+dbListTables(con)
+## [1] &quot;deces&quot;      &quot;menage&quot;     &quot;population&quot;</code></pre>
+<p>On a donc dans notre base, trois table: population, décès et ménage.</p>
+<p>On peut alors refaire notre calcul comme ceci mais cette fois-ci de deux façons:</p>
+<ul>
+<li>Soit en utilisant dplyr</li>
+</ul>
+<pre class="r"><code>population &lt;- tbl(con, &quot;population&quot;)
+
+knitr::kable(
+  population %&gt;% group_by(P04) %&gt;% 
+             summarise(Effectif = n(),
+                     age_moy = mean(P06AGE,na.rm = TRUE))
+  )</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">P04</th>
+<th align="right">Effectif</th>
+<th align="right">age_moy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">2839319</td>
+<td align="right">22.08893</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">3008134</td>
+<td align="right">23.94456</td>
+</tr>
+</tbody>
+</table>
+<p>-soit une requêt SQL</p>
+<pre class="sql"><code>SELECT P04, COUNT() AS Effectif, AVG(P06AGE) AS age_moy
+FROM population
+GROUP BY P04</code></pre>
+<div class="knitsql-table">
+<table>
+<caption><span id="tab:unnamed-chunk-11">Table 1: </span>2 records</caption>
+<thead>
+<tr class="header">
+<th align="left">P04</th>
+<th align="right">Effectif</th>
+<th align="right">age_moy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">2839319</td>
+<td align="right">22.08893</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">3008134</td>
+<td align="right">23.94456</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>En conclusion, chaque méthode dépend de ce qu’on voudrait faire avec les données et la méthode dans laquelle vous plus à l’aise pour la manipulation des données.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+<section id="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var d = document, s = d.createElement('script');
+    s.src = '//knsamatigithubio.disqus.com/embed.js'; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

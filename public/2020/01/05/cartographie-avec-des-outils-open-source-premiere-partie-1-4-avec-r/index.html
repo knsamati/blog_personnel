@@ -206,8 +206,7 @@ prefecture_sf &lt;- st_read(&quot;C:/Users/Samati/Desktop/r/geo/TGO_l04_2012.shp
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
 ## bbox:           xmin: -0.142457 ymin: 6.107759 xmax: 1.807527 ymax: 11.13804
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## CRS:            4326
 class(prefecture_sf)
 ## [1] &quot;sf&quot;         &quot;data.frame&quot;</code></pre>
 <p>C’est un objet de classe <strong>sf</strong> et <strong>data.frame</strong>. Il s’agit data.frame spécial avec une colonne geometry qui contient les coordonnées géographiques de l’objet importé.
@@ -266,6 +265,8 @@ dfx &lt;- df %&gt;%
 </ol>
 <p>Le package <strong>tmap</strong> permet de faire rapidement des cartes thématiques comme ceci:</p>
 <pre class="r"><code>library(tmap)
+## Warning: replacing previous import &#39;sf::st_make_valid&#39; by
+## &#39;lwgeom::st_make_valid&#39; when loading &#39;tmap&#39;
 
 tm_shape(base_ecole) +
   tm_fill(col = &#39;Taux_redoublement&#39;,style=&quot;kmeans&quot;) +

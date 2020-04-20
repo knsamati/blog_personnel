@@ -3,37 +3,62 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://knsamati.netlify.com/2020/01/05/cartographie-avec-des-outils-open-source-premiere-partie-1-4-avec-r/</loc>
-    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
+    <loc>https://knsamati.netlify.com/2020/04/16/cartographie-avec-des-outils-open-source-premiere-partie-2-4-avec-python/</loc>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://knsamati.netlify.com/categories/</loc>
-    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://knsamati.netlify.com/post/</loc>
-    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://knsamati.netlify.com/tags/r/</loc>
-    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://knsamati.netlify.com/categories/r/</loc>
-    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://knsamati.netlify.com/tags/r/</loc>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://knsamati.netlify.com/</loc>
-    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://knsamati.netlify.com/tags/</loc>
+    <lastmod>2020-04-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://knsamati.netlify.com/2020/04/12/manipulation-des-donn%C3%A9es-volumineuses-big-data-avec-r/</loc>
+    <lastmod>2020-04-12T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://knsamati.netlify.com/tags/r-python-sql/</loc>
+    <lastmod>2020-04-12T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://knsamati.netlify.com/2020/02/05/elaboration-d-un-tableau-de-bord-dans-r-le-back-end/</loc>
+    <lastmod>2020-02-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://knsamati.netlify.com/categories/r-python-sql/</loc>
+    <lastmod>2020-02-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://knsamati.netlify.com/2020/01/05/cartographie-avec-des-outils-open-source-premiere-partie-1-4-avec-r/</loc>
     <lastmod>2020-01-05T00:00:00+00:00</lastmod>
   </url>
   

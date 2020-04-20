@@ -6,10 +6,20 @@
     <description>Recent content in R on Statistiques avec Open Source</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://knsamati.netlify.com/tags/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cartographie avec des outils open source, Deuxième partie (2/4): Avec Python</title>
+      <link>https://knsamati.netlify.com/2020/04/16/cartographie-avec-des-outils-open-source-premiere-partie-2-4-avec-python/</link>
+      <pubDate>Thu, 16 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://knsamati.netlify.com/2020/04/16/cartographie-avec-des-outils-open-source-premiere-partie-2-4-avec-python/</guid>
+      <description>“L’échec est le fondement de la réussite.” lao-tseu
+ContexteCette note fait suit à la première publication sur l’introduction à la cartographie avec les outils Open Source. La première partie portait sur R et cette seconde partie porte sur Python. Python est un langage généraliste (Contrairement à R, non spécifique au Data Science) avec des packages spécifiques pour chaque domaine. Par exemple, on a Pandas pour Data Science, GeoPandas pour la manipulation des données géographiques, Flask et Django pour le développement web, etc.</description>
+    </item>
     
     <item>
       <title>Cartographie avec des outils open source. Premiere partie (1/4) : Avec R </title>

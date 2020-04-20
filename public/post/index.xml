@@ -6,10 +6,39 @@
     <description>Recent content in Posts on Statistiques avec Open Source</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://knsamati.netlify.com/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cartographie avec des outils open source, Deuxième partie (2/4): Avec Python</title>
+      <link>https://knsamati.netlify.com/2020/04/16/cartographie-avec-des-outils-open-source-premiere-partie-2-4-avec-python/</link>
+      <pubDate>Thu, 16 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://knsamati.netlify.com/2020/04/16/cartographie-avec-des-outils-open-source-premiere-partie-2-4-avec-python/</guid>
+      <description>“L’échec est le fondement de la réussite.” lao-tseu
+ContexteCette note fait suit à la première publication sur l’introduction à la cartographie avec les outils Open Source. La première partie portait sur R et cette seconde partie porte sur Python. Python est un langage généraliste (Contrairement à R, non spécifique au Data Science) avec des packages spécifiques pour chaque domaine. Par exemple, on a Pandas pour Data Science, GeoPandas pour la manipulation des données géographiques, Flask et Django pour le développement web, etc.</description>
+    </item>
+    
+    <item>
+      <title>Manipulation des données volumineuses (Big Data) avec R</title>
+      <link>https://knsamati.netlify.com/2020/04/12/manipulation-des-donn%C3%A9es-volumineuses-big-data-avec-r/</link>
+      <pubDate>Sun, 12 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://knsamati.netlify.com/2020/04/12/manipulation-des-donn%C3%A9es-volumineuses-big-data-avec-r/</guid>
+      <description>ContexteEn référence à ce twit d’un internaut demandant comment importer et manipuler un fichier de 4,5 Gb dans R avec une machine de 8Gb de RAM, j’ai decidé de faire un petit post sur l’importation et la maniplation des données sous R.Dans ce petit post, nous allons faire le tour des différentes solutions possibles.Dans un passé récent, R n’était pas connu pour la manipulation des fichiers assez volumineux mais la situation a assez évolué avec le développement de nouveaux packages.</description>
+    </item>
+    
+    <item>
+      <title>Introduction à l&#39;utilisation des Bases de Données avec R et Python</title>
+      <link>https://knsamati.netlify.com/2020/02/05/elaboration-d-un-tableau-de-bord-dans-r-le-back-end/</link>
+      <pubDate>Wed, 05 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://knsamati.netlify.com/2020/02/05/elaboration-d-un-tableau-de-bord-dans-r-le-back-end/</guid>
+      <description>“Il n’y a point de chemin vers le bonheur. Le bonheur, c’est le chemin” lao-tseu
+ContextePour avoir des données organisées et cohérentes, les bases de données sont incontournables. Etant statisticien, on est plus habitué à des données à plat ou format de tableau de données du type variable en colonne et individu en ligne (comme en excel).Lorsqu’on ne maitrise pas les outils élémentaires de Base de données, on est vite dépendant des informaticiens pour l’extraction des données nécessaires.</description>
+    </item>
     
     <item>
       <title>Cartographie avec des outils open source. Premiere partie (1/4) : Avec R </title>

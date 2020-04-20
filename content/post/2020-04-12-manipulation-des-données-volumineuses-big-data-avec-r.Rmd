@@ -1,0 +1,151 @@
+---
+title: Manipulation des données volumineuses (Big Data) avec R
+author: Komlan N. Samati
+date: '2020-04-12'
+slug: manipulation-des-données-volumineuses-big-data-avec-r
+categories: []
+tags:
+  - R, Python, SQL
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+library(knitr)
+```
+
+# Contexte
+
+En référence à ce [twit](https://twitter.com/dataccino/status/1247197111126577152) d'un internaut demandant comment importer et manipuler un fichier de 4,5 Gb dans R avec une  machine de 8Gb de RAM, j'ai decidé de faire un petit post sur l'importation et la maniplation des données sous R.
+Dans ce petit post, nous allons faire le tour des différentes solutions possibles.
+Dans un passé récent, R n'était pas connu pour la manipulation des fichiers assez volumineux mais la situation a assez évolué avec le développement de nouveaux packages. 
+
+Dans tous les cas, la puissance d'importation et de manipulation des fichiers volumineux dans R dépend aussi de la puissance de la machine utilisée.
+Pour illustrer ce post, nous utiliserons un fichier de près de 6 millions de lignes et 35 variables
+
+# La solution avec les packages
+
+```{r}
+fichier <- "C:/Users/Samati/Desktop/r/SPSS_RGPH4/population.csv"
+```
+
+Les solutions avec les packages sont assez nombreuses:*data.table*,*disk.frame*, *vroom*, *arrow*, *sparklyr*, *disk.frame*, etc. Dans ce post nous allons aborder *data.table* et *disk.frame*
+
+## 1. data.table
+
+A mon avis, c'est le package naturel pour importer et manipuler les données volumineuses dans R. C'est un package assez puissant et assez simple à apprendre. Je suis toujours assez fasciné par sa simplicité dans la manipulation des données.
+Pour l'importation de fichier csv, data.table dispose la fonction **fread()** et pour l'exportation **fwrite()**
+
+```{r,message=FALSE,warning=FALSE}
+library(data.table)
+dt <- fread(fichier)
+dim(dt);class(dt)
+```
+
+Un objet créé avec data.table est de class data.table et  data.frame, en gros on peut utiliser les syntaxes de base de R pour manipuler les objets importer avec data.table.
+Ainsi si nous vous voulons l'effectif par sexe et l'age moyen des individus :
+
+```{r,results='asis',message=FALSE,warning=FALSE}
+dt[,sexe := as.factor(P04)] # Renommer la colonne P04 en sexe
+setattr(dt$sexe,"levels",c("Masculin","Feminin"))# Renommer les modalités de la variable sexe
+kable(
+dt[,by=sexe,.(.N,mean(P06AGE, na.rm = TRUE))] 
+) # compter les individus,calculer l'âge moyen par sexe
+```
+
+Si jamais vous êtes familier avec le package dplyr de la famille de tidyverse, vous pouvez utiliser les syntaxe de dplyr avec les objets data.table à travers dtplyr comme ceci.
+```{r, results='asis',message=FALSE,warning=FALSE}
+library(dtplyr)
+library(dplyr)
+df <- lazy_dt(setDF(dt))
+
+kable(
+df %>% group_by(sexe) %>% 
+       summarise(Effectif = n(),
+                 age_moy = mean(P06AGE,na.rm = TRUE))
+)
+```
+
+
+## 2. disk.frame
+
+Un autre package que je trouve assez intéressant, c'est le package **disk.frame**. C'est assez comparable à data.table en terme de puissance. On peut utiliser un objet disk.frame avec les syntaxes de dplyr et de data.frame.
+
+Les options nécessaires,
+```{r,eval=FALSE,message=FALSE,warning=FALSE}
+library(disk.frame)
+setup_disk.frame()
+options(future.globals.maxSize = Inf)
+```
+
+
+-L'importation du fichier avec disk.frame
+
+```{r,eval=FALSE,message=FALSE,warning=FALSE}
+
+disk_df <- csv_to_disk.frame(
+  fichier, 
+  outdir = "population",
+  overwrite = T)
+```
+
+- La manipulation des données du disk.frame avec dplyr
+
+```{r, eval=FALSE,message=FALSE,warning=FALSE}
+kable(
+disk_df %>% group_by(P04) %>% 
+            summarise(Effectif = n(),
+            age_moy = mean(P06AGE,na.rm = TRUE)) %>% 
+            collect()
+)
+```
+
+- La manipulation des données du disk.frame avec data.table
+
+```{r,eval=FALSE,message=FALSE,warning=FALSE}
+kable(
+collect(disk_df)[,by=P04,.(.N,mean(P06AGE, na.rm = T))]
+)
+```
+
+
+# La solution base de données
+
+Dans un article précédent, nous avions déjà abordé l'utilisation des base de données avec R et python. Cette solution devient particulièrement intéressante dans le contexte des données volumineuses.
+Pour l'illustrer, nous avons crée une petite base de données sous SQLite avec les données précédentes (PostgreSQl est aussi une solution intéressante).
+
+```{r,message=FALSE,warning=FALSE}
+library(RSQLite)
+library(DBI)
+library(dplyr)
+setwd("C:/Users/Samati/Desktop/r/SPSS_RGPH4")
+con <- dbConnect(RSQLite::SQLite(), dbname = "census.sqlite3")
+dbListTables(con)
+```
+On a donc dans notre base, trois table: population, décès et ménage. 
+
+On peut alors refaire notre calcul comme ceci mais cette fois-ci de deux façons:
+
+- Soit en utilisant dplyr
+
+```{r, results='asis',message=FALSE,warning=FALSE}
+population <- tbl(con, "population")
+
+knitr::kable(
+  population %>% group_by(P04) %>% 
+             summarise(Effectif = n(),
+                     age_moy = mean(P06AGE,na.rm = TRUE))
+  )
+```
+
+-soit une requêt SQL
+
+
+```{sql connection = con}
+SELECT P04, COUNT() AS Effectif, AVG(P06AGE) AS age_moy
+FROM population
+GROUP BY P04
+```
+
+
+En conclusion, chaque méthode dépend de ce qu'on voudrait faire avec les données et la méthode dans laquelle vous plus à l'aise pour la manipulation des données.  
