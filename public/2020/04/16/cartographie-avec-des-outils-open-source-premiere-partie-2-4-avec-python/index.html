@@ -116,9 +116,7 @@ carte = gpd.read_file(r&#39;C:/Users/Samati/Desktop/r/geo/TGO_l04_2012.shp&#39;)
 <pre class="python"><code>carte.plot(figsize=(12,12))
 plt.title(&quot;Carte des préfectures du Togo&quot;)
 plt.savefig(&#39;carte1.png&#39;)</code></pre>
-<pre class="r"><code>knitr::include_graphics(&#39;carte1.png&#39;)</code></pre>
-<p><img src="carte1.png" width="600" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#knitr::include_graphics(&#39;/img/carte1.png&#39;)</code></pre>
+<p><img src="img/carte1.png" /></p>
 <p>Avant d’utiliser ces données, faisons un peu d’apurement de la colonne préfecture qui nous servira de fusion avec les données liées aux écoles:
 - Dans un premier temps, nous remplaçons les tirets par underscore;
 - Ensuite, bien écrire la préfecture MO qui était écrit avec accent;
@@ -182,9 +180,7 @@ plt.axis(&#39;off&#39;) # Enlever les axes
 ## (-0.23995619999999998, 1.9050262, 5.9012290499999995, 11.38741195)
 plt.title(&#39;Taux de redoublement par prefecture&#39;) # Ajouter un titre à la carte
 plt.savefig(&#39;carte2.png&#39;) #Enregister la carte</code></pre>
-<pre class="r"><code>knitr::include_graphics(&#39;carte2.png&#39;)</code></pre>
-<p><img src="carte2.png" width="600" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#knitr::include_graphics(&#39;/img/carte2.png&#39;)</code></pre>
+<p><img src="img/carte2.png" /></p>
 <p>Cette carte de base peut être améliorer en ajoutant, les éléments nécessaires. (consulter l’aide du package)</p>
 <p>On pourrait faire la même représentation avec un histogramme de la distribution du taux de redoublement (pris <a href="http://darribas.org/gds19/index.html">ici</a> de Dani Arribas-Bel).</p>
 <pre class="python"><code>import seaborn as sns
@@ -215,9 +211,7 @@ def plot_scheme(scheme, var, db, figsize=(16, 8), saveto=None):
     
 
 carte4 = plot_scheme(&#39;quantiles&#39;, &#39;Tx_redoublement&#39;,prefecture,figsize = (13, 13), saveto=&quot;carte3.png&quot;)</code></pre>
-<pre class="r"><code>knitr::include_graphics(&#39;carte3.png&#39;)</code></pre>
-<p><img src="carte3.png" width="650" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#knitr::include_graphics(&#39;/img/carte3.png&#39;)</code></pre>
+<p><img src="img/carte3.png" /></p>
 </div>
 <div id="représentation-ponctuelle" class="section level3">
 <h3>2. Représentation ponctuelle</h3>
@@ -232,9 +226,7 @@ plt.axis(&#39;off&#39;)
 plt.title(&#39;Distribustion des écoles par prefecture&#39;)
 plt.savefig(&#39;carte4.png&#39;)
 #figsize=(10,10),to_crs(epsg=32630).</code></pre>
-<pre class="r"><code>knitr::include_graphics(&#39;carte4.png&#39;)</code></pre>
-<p><img src="carte4.png" width="750" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#knitr::include_graphics(&#39;/img/carte4.png&#39;)</code></pre>
+<p><img src="img/carte4.png" /></p>
 <p>On pourrait représenter la variable taux de redoublement par école comme ceci. Dans un premier temps, on restreint nos données à la région de la savanes, ensuite on calcule le taux de redoublement et en fin on représente les deux couches superposées.</p>
 <pre class="python"><code>
 savanes_carte = carte.loc[carte.REGION ==&#39;SAVANES&#39;] 
@@ -252,9 +244,7 @@ plt.axis(&#39;off&#39;)
 ## (-0.19519419999999998, 0.9650242, 9.813261300000002, 11.2011247)
 plt.title(&#39;Taux de redoublement par école dans la région des savanes&#39;)
 plt.savefig(&#39;carte5.png&#39;)</code></pre>
-<pre class="r"><code>knitr::include_graphics(&#39;carte5.png&#39;)</code></pre>
-<p><img src="carte5.png" width="600" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#knitr::include_graphics(&#39;/img/carte4.png&#39;)</code></pre>
+<p><img src="img/carte5.png" /></p>
 </div>
 <div id="la-représentation-avec-altair" class="section level3">
 <h3>La représentation avec Altair</h3>
@@ -312,7 +302,7 @@ stat = alt.Chart(prefecture).mark_geoshape(
 <div id="la-représentation-interactive" class="section level1">
 <h1>La représentation interactive</h1>
 <p>Les packages <strong>plotly</strong>, <strong>folium</strong> et <strong>altair</strong> permettront d’illustrer cette partie.</p>
-<p>Le package altair permet de faire des cartes interactives avec seulement quelques lignes de codes. Ici nous ajoutons à notre code précédent l’option tooltip pour afficher la prefecture et le taux de redoublement.</p>
+<p>Le package altair permet de faire des cartes interactives avec seulement quelques lignes de codes. Ici nous ajoutons à notre code précédent l’option tooltip pour afficher la préfecture et le taux de redoublement.</p>
 <pre class="python"><code>stata = alt.Chart(prefecture).mark_geoshape(
           ).encode( 
             color =&#39;Tx_redoublement:Q&#39;, 

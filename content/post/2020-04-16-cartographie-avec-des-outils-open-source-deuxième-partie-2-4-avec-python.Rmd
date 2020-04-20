@@ -57,9 +57,10 @@ plt.title("Carte des préfectures du Togo")
 plt.savefig('carte1.png')
 ```
 
+![](img/carte1.png)
 
-```{r,fig.align='center',message=FALSE,warning=FALSE}
-knitr::include_graphics('carte1.png')
+```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
+#knitr::include_graphics('carte1.png')
 #knitr::include_graphics('/img/carte1.png')
 ```
 
@@ -147,8 +148,9 @@ plt.savefig('carte2.png') #Enregister la carte
 
 ```
 
-```{r,fig.align='center',message=FALSE,warning=FALSE}
-knitr::include_graphics('carte2.png')
+![](img/carte2.png)
+```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
+#knitr::include_graphics('carte2.png')
 #knitr::include_graphics('/img/carte2.png')
 ```
 
@@ -188,8 +190,9 @@ carte4 = plot_scheme('quantiles', 'Tx_redoublement',prefecture,figsize = (13, 13
 
 ```
 
-```{r,fig.align='center',message=FALSE,warning=FALSE}
-knitr::include_graphics('carte3.png')
+![](img/carte3.png)
+```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
+#knitr::include_graphics('carte3.png')
 #knitr::include_graphics('/img/carte3.png')
 ```
 
@@ -216,8 +219,10 @@ plt.savefig('carte4.png')
 
 ```
 
-```{r,fig.align='center',message=FALSE,warning=FALSE}
-knitr::include_graphics('carte4.png')
+![](img/carte4.png)
+
+```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
+#knitr::include_graphics('carte4.png')
 #knitr::include_graphics('/img/carte4.png')
 ```
 
@@ -238,8 +243,10 @@ plt.savefig('carte5.png')
 
 ```
 
-```{r,fig.align='center',message=FALSE,warning=FALSE}
-knitr::include_graphics('carte5.png')
+![](img/carte5.png)
+
+```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
+#knitr::include_graphics('carte5.png')
 #knitr::include_graphics('/img/carte4.png')
 ```
 
@@ -276,7 +283,7 @@ as_vegaspec(py$stat)
 
 Les packages **plotly**, **folium** et **altair** permettront d'illustrer cette partie.
 
-Le package altair permet de faire des cartes interactives avec seulement quelques lignes de codes. Ici nous ajoutons à notre code précédent l'option tooltip pour afficher la prefecture et le taux de redoublement.
+Le package altair permet de faire des cartes interactives avec seulement quelques lignes de codes. Ici nous ajoutons à notre code précédent l'option tooltip pour afficher la préfecture et le taux de redoublement.
 
 
 ```{python}
