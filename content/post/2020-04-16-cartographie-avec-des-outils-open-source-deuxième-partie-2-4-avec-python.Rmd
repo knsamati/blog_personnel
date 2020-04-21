@@ -51,13 +51,13 @@ Comme pour le package **sf** de R, c'est un DataFrame spécial avec une colonne 
 
 Une idée de la carte des préfectures importée se fait à l'aide de la fonction *plot*:
 
-```{python,carte1,message=FALSE,warning=FALSE}
-carte.plot(figsize=(12,12))
+```{python carte1,message=FALSE,warning=FALSE}
+carte.plot(figsize=(10,10))
 plt.title("Carte des préfectures du Togo")
 plt.savefig('carte1.png')
 ```
 
-![](img/carte1.png)
+![](/img/carte1.png)
 
 ```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
 #knitr::include_graphics('carte1.png')
@@ -139,16 +139,16 @@ La fonction **plot** appliquée à notre objet préfecture, permet d'avoir une r
 
 On peut faire une carte thématique avec les données par préfecture en spécifiant la colonne (ici le taux de redoublement par préfecture) :
 
-```{python,message=FALSE,warning=FALSE}
+```{python carte2,message=FALSE,warning=FALSE}
 from mapclassify import Quantiles, EqualInterval
-prefecture.plot(figsize=(12,12),column='Tx_redoublement', scheme='EqualInterval', alpha=0.75, k=5,cmap=plt.cm.RdPu_r,linewidth = 0.8,edgecolor='0.8', legend = True)
+prefecture.plot(figsize=(10,10),column='Tx_redoublement', scheme='EqualInterval', alpha=0.75, k=5,cmap=plt.cm.RdPu_r,linewidth = 0.8,edgecolor='0.8', legend = True)
 plt.axis('off') # Enlever les axes
 plt.title('Taux de redoublement par prefecture') # Ajouter un titre à la carte
 plt.savefig('carte2.png') #Enregister la carte
 
 ```
 
-![](img/carte2.png)
+![](/img/carte2.png)
 ```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
 #knitr::include_graphics('carte2.png')
 #knitr::include_graphics('/img/carte2.png')
@@ -158,7 +158,7 @@ Cette carte de base peut être améliorer en ajoutant, les éléments nécessair
 
 On pourrait faire la même représentation avec un histogramme de la distribution du taux de redoublement (pris [ici](http://darribas.org/gds19/index.html) de Dani Arribas-Bel).
 
-```{python,message=FALSE,warning=FALSE}
+```{python carte3,message=FALSE,warning=FALSE}
 import seaborn as sns
 import mapclassify
 
@@ -186,11 +186,11 @@ def plot_scheme(scheme, var, db, figsize=(16, 8), saveto=None):
 
     
 
-carte4 = plot_scheme('quantiles', 'Tx_redoublement',prefecture,figsize = (13, 13), saveto="carte3.png")
+carte3 = plot_scheme('quantiles', 'Tx_redoublement',prefecture,figsize = (10, 10), saveto="carte3.png")
 
 ```
 
-![](img/carte3.png)
+![](/img/carte3.png)
 ```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
 #knitr::include_graphics('carte3.png')
 #knitr::include_graphics('/img/carte3.png')
@@ -209,17 +209,16 @@ ecole.crs = {'init': 'epsg:4326'}
 
 On représente les deux couches superposées comme ceci
 
-```{python,message=FALSE,warning=FALSE}
-ax = carte.plot(figsize=(15,15),color='whitesmoke', linestyle=':',edgecolor = 'black')
-carte3 = ecole.plot(figsize=(15,15),markersize=1, ax=ax)
+```{python carte4,message=FALSE,warning=FALSE}
+ax = carte.plot(figsize=(10,10),color='whitesmoke', linestyle=':',edgecolor = 'black')
+carte4 = ecole.plot(figsize=(10,10),markersize=1, ax=ax)
 plt.axis('off')
 plt.title('Distribustion des écoles par prefecture')
 plt.savefig('carte4.png')
-#figsize=(10,10),to_crs(epsg=32630).
 
 ```
 
-![](img/carte4.png)
+![](/img/carte4.png)
 
 ```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
 #knitr::include_graphics('carte4.png')
@@ -228,14 +227,14 @@ plt.savefig('carte4.png')
 
 On pourrait représenter la variable taux de redoublement par école comme ceci. Dans un premier temps, on restreint nos données à la région de la savanes, ensuite on calcule le taux de redoublement et en fin on représente les deux couches superposées.
 
-```{python,message=FALSE,warning=FALSE}
+```{python carte5,message=FALSE,warning=FALSE}
 
 savanes_carte = carte.loc[carte.REGION =='SAVANES'] 
 savanes = df.loc[df.REGION =='SAVANES']
 
 savanes['Tx_redoublement'] =1000*(savanes['red_G_AN2']+(savanes['red_F_AN2']))/(savanes['Effectif_F_AN1']+(savanes['Effectif_G_AN1']))
 
-ax = savanes_carte.plot(figsize = (12,12), color='whitesmoke', linestyle=':',edgecolor = 'black')
+ax = savanes_carte.plot(figsize = (10,10), color='whitesmoke', linestyle=':',edgecolor = 'black')
 ax.scatter(savanes.long,savanes.lat,s=savanes.Tx_redoublement,alpha=0.5)
 plt.axis('off')
 plt.title('Taux de redoublement par école dans la région des savanes')
@@ -243,7 +242,7 @@ plt.savefig('carte5.png')
 
 ```
 
-![](img/carte5.png)
+![](/img/carte5.png)
 
 ```{r,fig.align='center',message=FALSE,warning=FALSE,echo=FALSE}
 #knitr::include_graphics('carte5.png')
@@ -297,15 +296,15 @@ stata = alt.Chart(prefecture).mark_geoshape(
             title = 'Taux de redoublement par Prefecture'
           ).to_json()
 ```
-Les chiffres Q et N devant les variables precisent leur type:
+Les chiffres Q et N devant les variables précisent leur type:
 - Q : Quantitative;
 - N : Nominale;
 - O : ordonnée;
 - T : temporelle.
 
 ```{r,echo=FALSE,fig.align='center'}
+library(vegawidget)
 as_vegaspec(py$stata)
 ```
-
 
 Le package **Folium** est l'adaptation du package leaflet de Javascipt en python. Nous reviendrons sur le package leaflet dans la troisième partie de cette serie sur les représentations graphiques avec les outils open source.
