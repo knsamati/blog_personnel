@@ -1,0 +1,17 @@
+---
+title: "Bien designer son graphique avec R"
+author: "Komlan N. Samati"
+date: 2022-01-03T21:13:14-05:00
+categories: ["R", "Python", "ODK"]
+tags: ["Collecte",  "Dashboard"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+
+> "Celui qui recherche la vengeance devrait se souvenir de creuser deux tombes." Proverbe Chinois
+
+### Contexte
+
